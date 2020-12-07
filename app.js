@@ -9,70 +9,150 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const Employee = require("./lib/Employee");
+
+const createTeamRoster = [];
 
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-function generateTeam() {
-const employeeInformation = inquirer.prompt([
-    { 
-        type: "list",
-        name: "role",
-        message: "What is the role you would like created?",
-        choices: ["Manager", "Engineer", "Intern"]
-    },
-    { 
-        type: "input",
-        name: "name",
-        message: "What is the manager's name?"
-    },
-    {
-        type: "input",
-        name: "id",
-        message: "What is the manager's ID number?"
-    },
-    {
-        type: "input",
-        name: "email",
-        message: "What is the manager's email address?"
-    },
-        
-])
-.then(answers => {
-    if (answers.role === "Manager") {
-    inquirer.prompt ([
+
+//FUNCTION TO GENERATE MANAGER
+function generateManager() {
+    const managerInfo = inquirer.prompt([
+        { 
+            type: "input",
+            name: "name",
+            message: "What is the manager's name?"
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the manager's ID number?"
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the manager's email address?"
+        },
         {
             type: "input",
             name: "officeNumber",
             message: "What is the managers office number?"
         }
-    ])    
-    } else if (answers.role === "Engineer") {
-        inquirer.prompt ([
+    ])
+    .then(function (answers) {
+        let manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
+        createTeamRoster.push(manager);
+        addMore();  
+        
+    })
+    .catch(function(err) {
+        console.log(err);
+      });
+}
+//FUNCTION TO ASK IF ANOTHER EMPLOYEE SHOULD BE ADDED
+function addMore() {
+    inquirer.prompt([
+        { 
+            type: "list",
+            name: "role",
+            message: "What is the next role you would like created?",
+            choices: ["Engineer", "Intern", "No Other Roles"]
+        } 
+    ])
+    .then(answers => {
+        if (answers.role === "Engineer") {
+            addEngineer();
+        } else if (answers.role === "Intern") {
+            addIntern();
+        } else {generateFile()}
+    })
+    .catch(function(err) {
+        console.log(err);
+    })
+};
+// FUNCTION TO ADD ENGINEER IF SELECTED
+function addEngineer() {
+    inquirer.prompt([
+            { 
+                type: "input",
+                name: "name",
+                message: "What is the engineers's name?"
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "What is the engineers's ID number?"
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "What is the engineer's email address?"
+            },
             {
                 type: "input",
                 name: "gitHub",
                 message: "What is the Engineer's GitHub username?"
-            }
+            },
         ])
-    } else {
-        inquirer.prompt ([
-            {
-                type: "input",
-                name: "school",
-                message: "What school does the intern attend?"
-            }
-        ])
-    }
-})
-
+        .then(answers => {
+            let engineer = new Engineer(answers.name, answers.id, answers.email, answers.gitHub);
+            createTeamRoster.push(engineer);
+            addMore();   
+        })
+        .catch(function(err) {
+            console.log(err);
+          });
+} 
+//FUNCTION TO ADD INTERN IF SELECTED
+function addIntern() {
+    inquirer.prompt([
+        { 
+            type: "input",
+            name: "name",
+            message: "What is the interns's name?"
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the interns's ID number?"
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the interns's email address?"
+        },
+        {
+            type: "input",
+            name: "school",
+            message: "What school is the intern attending?"
+        },
+    ])
+    .then(answers => {
+        let intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+        createTeamRoster.push(intern);
+        addMore();   
+    })
+    .catch(function(err) {
+        console.log(err);
+      });
 }
+ 
+//CALL FUNCTION
+generateManager();
 
-generateTeam();
+
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
+
+function generateFile() {
+    fs.writeFileSync(outputPath, render(createTeamRoster), "utf-8")
+}
+
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
@@ -90,28 +170,3 @@ generateTeam();
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
 
-
-/*inquirer
-  .prompt([
-    {
-      name: "wants_pizza",
-      type: "confirm",
-      message: "Do you want a free pizza?",
-    },
-    {
-      name: "confirm_answer",
-      type: "confirm",
-      message: "Are you sure?",
-      when: (answers) => answers.wants_pizza === false,
-    },
-  ])
-  .then((answers) => {
-    if (answers.wants_pizza) {
-      console.log("The user wants free pizza");
-    } else if (answers.confirm_answer) {
-      // the user definitely doesn't want pizza
-    } else {
-      // the user changed their mind
-      // run the function to ask this question again
-    }
-  });*/
