@@ -19,7 +19,7 @@ const createTeamRoster = [];
 
 //FUNCTION TO GENERATE MANAGER
 function generateManager() {
-    const managerInfo = inquirer.prompt([
+     inquirer.prompt([
         { 
             type: "input",
             name: "name",
@@ -38,7 +38,7 @@ function generateManager() {
         {
             type: "input",
             name: "officeNumber",
-            message: "What is the managers office number?"
+            message: "What is the manager's office number?"
         }
     ])
     .then(function (answers) {
@@ -149,10 +149,14 @@ generateManager();
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
 
-function generateFile() {
-    fs.writeFileSync(outputPath, render(createTeamRoster), "utf-8")
-}
+//function generateFile() {
+//    fs.writeFileSync(outputPath, render(createTeamRoster), "utf-8")
+//}
 
+function generateFile() {
+    const makeit = render(createTeamRoster);
+    fs.writeFile(outputPath, makeit, {}, () => console.log("Thanks, your page has been generated"));
+}
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
