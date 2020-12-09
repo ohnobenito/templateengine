@@ -7,7 +7,7 @@ Links to [GitHub Repo](https://www.github.com/ohnobenito/templateengine) and [De
 
 ![Badge:](https://img.shields.io/badge/License-mit-brightgreen)
 
-![Application Demo Gif:](/lib/appdemo2.gif)
+![Application Demo Gif:](/lib/appdemo3.gif)
 ![Launched Page Example:](/lib/applaunch.png)
 
 ## Table of Contents
